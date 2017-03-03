@@ -131,8 +131,9 @@ function language_controler_flags()
       'LANGUAGE_SWITCH_PATH' => LANGUAGE_SWITCH_PATH,
       'LANGUAGE_SWITCH_LOAD_STYLE' => !in_array($user['theme'], $safe_themes),
       ));
-  
-  $template->set_filename('language_flags', dirname(__FILE__) . '/flags.tpl');
+
+  $template->set_template_dir(realpath(dirname(__FILE__)));
+  $template->set_filename('language_flags', 'language_switch_flags.tpl');
   $template->concat('PLUGIN_INDEX_ACTIONS', $template->parse('language_flags', true) );
   $template->clear_assign('lang_switch');
 }
