@@ -56,6 +56,11 @@ UPDATE '.USER_INFOS_TABLE.'
       
       $user['language'] = $_GET['lang'];
     }
+
+    if (isset($_GET['redirect_to_home']))
+    {
+      redirect(get_absolute_root_url());
+    }
   }
   elseif ( (is_a_guest() or is_generic()) )
   {
@@ -106,11 +111,20 @@ function language_controler_flags()
   {
     $base_url = duplicate_index_url();
   }
-  
+
+  // Bootstrap Darkroom does not consider index?/categories as the homepage, thus doesn't display
+  // the full height banner (if configured this way). We need to force a redirect (after language
+  // has switched) in this specific case.
+  $url_options = array();
+  if (preg_match('/^index(\.php\?)?\?\/categories$/', $base_url))
+  {
+    $url_options['redirect_to_home'] = 1;
+  }
+
   foreach ($available_lang as $code => $displayname)
   {
     $qlc = array (
-      'url' => add_url_params($base_url, array('lang'=> $code)),
+      'url' => add_url_params($base_url, array_merge($url_options, array('lang'=> $code))),
       'alt' => ucwords($displayname),
       'title' => substr($displayname, 0, -4), // remove [FR] or [RU]
       'code' => $code,
